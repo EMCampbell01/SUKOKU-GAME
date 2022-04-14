@@ -1,40 +1,51 @@
-import Game
+import SudokuLogic
 
-print("╭━━━╮╭━━━╮╭━━━╮╭━━━╮╭╮╭━╮╭╮ ╭╮")
-print("┃╭━╮┃┃╭━╮┃╰╮╭╮┃┃╭━╮┃┃┃┃╭╯┃┃ ┃┃")
+'''
+SUDOKUGAME Euan Campbell 27/03/2022
+This is the main file for SUDOKUGAME.py
+functions from SUDOKULOGIC.py are used to create a sudoku console game.
+'''
+
+print("╭━━━╮╭╮ ╭╮╭━━━╮╭━━━╮╭╮╭━╮╭╮ ╭╮")
+print("┃╭━╮┃┃┃ ┃┃╰╮╭╮┃┃╭━╮┃┃┃┃╭╯┃┃ ┃┃")
 print("┃╰━━╮┃┃ ┃┃ ┃┃┃┃┃┃ ┃┃┃╰╯╯ ┃┃ ┃┃")
 print("╰━━╮┃┃┃ ┃┃ ┃┃┃┃┃┃ ┃┃┃╭╮┃ ┃┃ ┃┃")
 print("┃╰━╯┃┃╰━╯┃╭╯╰╯┃┃╰━╯┃┃┃┃╰╮┃╰━╯┃")
 print("╰━━━╯╰━━━╯╰━━━╯╰━━━╯╰╯╰━╯╰━━━╯")
 print("BY EUAN CAMPBELL\n")
 
+# Gameplay running loop
+while True:
 
-selecting_difficulty = True
-while selecting_difficulty:
+    # User selects difficulty
+    difficulty = SudokuLogic.select_difficulty()
 
-    print("SELECT DIFFICULTY (E/M/H) :")
-    difficulty = input()
+    # Creates new random board
+    print("Creating Game...")
+    board = SudokuLogic.create_random_board()
+    SudokuLogic.fill_board(board)
+    SudokuLogic.set_board(board, difficulty)
+    print("Game Created!\n")
 
-    if difficulty == "E" or difficulty == "M" or difficulty == "H":
+    print('INPUT MOVES AS THE FOLLOWING: "COL ROW NUM"')
+    print('INPUT "STOP" TO END GAME\n')
 
-        if difficulty == "E":
-            difficulty = 40
-        else:
-            if difficulty == "M":
-                difficulty = 30
-            else:
-                difficulty = 20
+    pre_set_sqrs = SudokuLogic.find_filled(board)  # list of unchangeable pre-set squares, output in blue
 
-        selecting_difficulty = False
+    # player inputs moves until the game is finished
+    game_running = True
+    while game_running:
+        SudokuLogic.draw_board(board, pre_set_sqrs)
+        if not SudokuLogic.player_move(board, pre_set_sqrs):
+            break
+        if SudokuLogic.check_for_win(board):
+            game_running = False
+            print("Puzzle Solved!")
+            break
 
-    else:
-        print("INVALID INPUT! TRY AGAIN")
+    # Option to play again
+    print("\nWould you like to play again? (Y/N) : ")
+    if input().capitalize() == "Y":
         continue
-
-print("Creating Game...")
-
-board = Game.create_random_board()
-Game.fill_board(board)
-Game.set_board(board, difficulty)
-
-Game.draw_board(board)
+    else:
+        break
